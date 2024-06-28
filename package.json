@@ -1,0 +1,16 @@
+{
+  "name": "web-socket",
+  "version": "1.0.0",
+  "description": "A simple projet to lear web-socket with socket io",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "nodemon": "^3.1.4",
+    "socket.io": "^4.7.5"
+  }
+}
