@@ -4,6 +4,7 @@ const { join } = require('node:path');
 const { Server } = require('socket.io');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const moment = require('moment');
 
 const app = express();
 const server = createServer(app);
@@ -27,8 +28,9 @@ io.on('connection', (socket) => {
     console.log('a user connected');
     
     socket.on('chat message', (message) => {
-        console.log(`${message.senderName}: ${message.message}`)
-        socket.broadcast.emit('chat message', message);
+        message.messageTime = moment().format("HH:mm");
+        console.log(`${message.senderName}: ${message.message}\n${message.messageTime}`)
+        io.emit('chat message', message);
     });
 
     socket.on('disconnect', () => {

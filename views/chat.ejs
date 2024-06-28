@@ -2,7 +2,8 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>Ghost-talking</title>
+    <link rel="icon" href="./assets/logo.png" type="image/png">
+    <title>Ghost-talk</title>
     <style>
       body { background-color: #28283c; margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;}
 
@@ -13,17 +14,19 @@
       }
 
       #form { background-color: #28283c; padding: 0.25rem; box-shadow: 0 0 5px #3c3c50; height: 50%; max-height: 3.5em; position: fixed; bottom: 0; left: 0; right: 0; display: flex; box-sizing: border-box; backdrop-filter: blur(10px); }
-      #input { background-color: #3c3c50; color: white; border: none; padding: 0 1rem; box-shadow: 0 0 3px rgba(255, 255, 255, 0.3) inset; border-radius: 2rem; flex-grow: 1; margin: 0.25rem; }
-      #input:focus { outline: none; box-shadow: 0 0 3px rgba(255, 255, 255, 0.3);}
-      #form > button {  background: #5a5a9b; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 25px; outline: none; color: #fff; }
+      #input { background-color: #28283c; color: white; border: none; padding: 0 1rem; border-radius: 2rem; flex-grow: 1; margin: 0.25rem; }
+      #input:focus {outline: none; box-shadow: 0 0 2px rgba(255, 255, 255, 0.3) inset;}
+      /* #input:focus {background-color: #3c3c50; outline: none; box-shadow: 0 0 1px rgba(0, 0, 0, 0.342);} */
+      #form > button {  background: #5a5a9b; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 1em; outline: none; color: #fff; }
 
       .message-row {padding: 0.3em 1em; display: flex; flex-direction: row; justify-content: start;}
-      .message-row:has(.own) {justify-content: end;}
-      .message-item {width: max-content; max-width: 40%; color: #efefef; padding: 0.7rem; margin: 0; border-radius: 15px 15px 15px 15px;}
-      .own {background-color: #5a5a9b; border-bottom-right-radius: 0;}
-      .other {background-color: #3c3c3c; border-top-left-radius: 0;}
+      .own {justify-content: end;}
+      .message-item {width: max-content; max-width: 40%; min-width: 5em; color: #efefef; padding: 0.7rem; margin: 0; border-radius: 15px 15px 15px 15px;}
+      .own .message-item {background-color: #5a5a9b; border-bottom-right-radius: 0;}
+      .other .message-item {background-color: #3c3c3c; border-top-left-radius: 0;}
       .sender-name {margin: 0 0 0 0; color: #7878af;}
       .message {margin: 0;}
+      .message-time {margin: 0; font-size: 0.7em; color: #bfbfe6; text-align: right;}
       #messages-list { list-style-type: none; margin: 0; padding: 1em 0; display: flex; flex-direction: column;}
       #message-container {display: flex; flex-direction: column; justify-content: space-between; overflow: auto}
       #header-message-container {background-color: #3c3c50; color: #52a77a; box-shadow: 0 0 0.7px black; padding: 0.1em 1rem; margin: 0;}
@@ -67,49 +70,43 @@
 
       form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const messageRow = document.createElement('div');
-        const messageItem = document.createElement('p');
-        const message = document.createElement("p");
-
         if (input.value) {
           socket.emit('chat message', {message:input.value, senderName:username});
-          message.textContent = input.value;
           input.value = '';
-
-          message.classList.add("message");
-
-          messageItem.classList.add("own", "message-item");
-          messageItem.appendChild(message);
-
-          messageRow.classList.add("message-row");
-          messageRow.appendChild(messageItem);
-
-          messagesList.appendChild(messageRow);
-          window.scrollTo(0, document.body.scrollHeight);
         }
       });
 
       socket.on('chat message', (msg) => {
         const messageRow = document.createElement('div');
         const messageItem = document.createElement('div');
-        const senderNname = document.createElement('p');
         const message = document.createElement("p");
+        const messageTime = document.createElement("p");
 
         message.classList.add("message")
         message.textContent = msg.message;
 
-        senderNname.classList.add('sender-name');
-        senderNname.textContent = msg.senderName;
+        if(msg.senderName === username){
+          messageRow.classList.add("own");
+        } else{
+          const senderNname = document.createElement('p');
+          senderNname.classList.add('sender-name');
+          senderNname.textContent = msg.senderName;
+          messageRow.classList.add("other");
+          messageItem.appendChild(senderNname);
+        }
 
-        messageItem.classList.add("other", "message-item");
-        messageItem.appendChild(senderNname);
+        messageTime.classList.add('message-time');
+        messageTime.textContent = msg.messageTime;
+
+        messageItem.classList.add("message-item");
         messageItem.appendChild(message);
+        messageItem.appendChild(messageTime);
 
         messageRow.classList.add("message-row");
         messageRow.appendChild(messageItem);
 
         messagesList.appendChild(messageRow);
-        window.scrollTo(0, document.body.scrollHeight);
+        // window.scrollTo(0, document.body.scrollHeight);
       });
     </script>
   </body>
