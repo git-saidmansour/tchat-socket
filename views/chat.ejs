@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Ghost-talking</title>
+    <style>
+      body { background-color: #28283c; margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;}
+
+      #main-container {
+        display: flex;
+        flex-direction: column;
+      }
+
+      #form { background-color: #28283c; padding: 0.25rem; height: 7vh; box-shadow: 0 0 5px #3c3c50; position: fixed; bottom: 0; left: 0; right: 0; display: flex; box-sizing: border-box; backdrop-filter: blur(10px); }
+      #input { background-color: #3c3c50; color: white; border: none; padding: 0 1rem; box-shadow: 0 0 3px rgba(255, 255, 255, 0.3) inset; border-radius: 2rem; flex-grow: 1; margin: 0.25rem; }
+      #input:focus { outline: none; box-shadow: 0 0 3px rgba(255, 255, 255, 0.3);}
+      #form > button {  background: #5a5a9b; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 25px; outline: none; color: #fff; }
+
+      .message-row {padding: 0.3em 1em; display: flex; flex-direction: row; justify-content: start;}
+      .message-row:has(.own) {justify-content: end;}
+      .message-item {width: max-content; color: #efefef; padding: 0.7rem; margin: 0; border-radius: 15px 15px 15px 15px;}
+      .own {background-color: #5a5a9b; border-bottom-right-radius: 0;}
+      .other {background-color: #3c3c3c; border-top-left-radius: 0;}
+      .sender-name {margin: 0 0 0 0; color: #7878af;}
+      .message {margin: 0;}
+      #messages-list { list-style-type: none; margin: 0; padding: 1em 0; display: flex; flex-direction: column;  overflow: scroll}
+      #message-container {height: 93vh; display: flex; flex-direction: column; justify-content: space-between}
+      #header-message-container {background-color: #3c3c50; color: #52a77a; box-shadow: 0 0 0.7px black; padding: 0.1em 1rem; margin: 0;}
+      #header-message-container > h1 { margin-bottom: 0; color: #a2a2c4;}
+      #header-message-container > h2 { margin: 0 0 10px 0; padding: 0; color: #7878af;}
+      
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <div id="main-container">
+      <div id="message-container">
+        <div id="header-message-container">
+          <h1>Ghost-talk</h1>
+        </div>
+        <div id="messages-list"></div>
+      </div>
+      <form id="form" action="">
+        <input id="input" autocomplete="off" placeholder="Enter your message"/>
+        <button> 
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M17.8098 0.187541C17.8979 0.275589 17.9586 0.387352 17.9844 0.509235C18.0102 0.631118 18 0.757869 17.9551 0.874073L11.5273 17.5874C11.4818 17.7057 11.4024 17.8078 11.299 17.8811C11.1956 17.9543 11.0729 17.9954 10.9462 17.9991C10.8196 18.0028 10.6947 17.969 10.5872 17.9019C10.4797 17.8349 10.3944 17.7375 10.3421 17.6221L7.65398 11.7082L11.6083 7.75225C11.7786 7.56946 11.8713 7.3277 11.8669 7.0779C11.8625 6.8281 11.7613 6.58976 11.5847 6.4131C11.408 6.23643 11.1697 6.13524 10.9199 6.13083C10.6702 6.12642 10.4284 6.21915 10.2456 6.38947L6.29001 10.3441L0.376497 7.65711C0.260755 7.60483 0.163092 7.51944 0.0958334 7.4117C0.028575 7.30397 -0.00526417 7.17873 -0.00141333 7.05178C0.00243751 6.92483 0.0438058 6.80186 0.11747 6.6984C0.191135 6.59495 0.293795 6.51563 0.412492 6.47046L17.1246 0.0422639C17.2406 -0.00238052 17.3671 -0.0124182 17.4887 0.0133669C17.6103 0.039152 17.7219 0.0996533 17.8098 0.187541Z" fill="white"/>
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      let username = "<%= locals.username%>";
+      const header = document.getElementById('header-message-container')
+      const title = document.createElement('h2');
+      title.textContent = username;
+      header.appendChild(title);
+
+      const socket = io();
+      
+      const form = document.getElementById('form');
+      const input = document.getElementById('input');
+      const messagesList = document.getElementById('messages-list');
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const messageRow = document.createElement('div');
+        const messageItem = document.createElement('p');
+        const message = document.createElement("p");
+
+        if (input.value) {
+          socket.emit('chat message', input.value, username);
+          message.textContent = input.value;
+          input.value = '';
+
+          message.classList.add("message");
+
+          messageItem.classList.add("own", "message-item");
+          messageItem.appendChild(message);
+
+          messageRow.classList.add("message-row");
+          messageRow.appendChild(messageItem);
+
+          messagesList.appendChild(messageRow);
+          window.scrollTo(0, document.body.scrollHeight);
+        }
+      });
+
+      socket.on('chat message', (msg, senderName) => {
+        const messageRow = document.createElement('div');
+        const messageItem = document.createElement('div');
+        const senderNname = document.createElement('p');
+        const message = document.createElement("p");
+
+        message.classList.add("message")
+        message.textContent = msg;
+
+        senderNname.classList.add('sender-name');
+        senderNname.textContent = senderName;
+
+        messageItem.classList.add("other", "message-item");
+        messageItem.appendChild(senderNname);
+        messageItem.appendChild(message);
+
+        messageRow.classList.add("message-row");
+        messageRow.appendChild(messageItem);
+
+        messagesList.appendChild(messageRow);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+    </script>
+  </body>
+</html>

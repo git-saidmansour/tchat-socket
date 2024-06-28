@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghost-talking</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      #container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100vh;
+        background-color: #28283c;
+        color: white;
+      }
+
+      #form-user {
+        border-radius: 10px;
+        background-color: white;
+        color: black;
+        margin: auto;
+        width: 90%;
+        max-width: 500px;
+        height: 50vh;
+        max-height: 700px;
+        padding: 1em 0;
+      }
+
+      .form-container {
+        /* background-color: red; */
+        /* position: relative; */
+      }
+
+      #form { 
+        padding: 0.25rem; 
+        min-height: 60px;
+        max-height: 30%;
+        /* box-shadow: 0 0 0.7px rgba(0, 0, 0, 0.5);  */
+        display: flex;
+        box-sizing: border-box; 
+      }
+
+      #input { 
+        border: none; 
+        border-bottom: 0.5px solid rgba(65, 64, 64, 0.432);
+        padding: 0 1rem; 
+        flex-grow: 1; 
+        margin: 0.25rem; 
+      }
+
+      #input:focus { 
+        outline: none; 
+      }
+      #form > button {border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 25px; color: #52527a; }
+
+      .logo-container {
+        /* background-color: yellow; */
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+      }
+
+      .logo {
+        /* background-color: red; */
+        width: 40%;
+        max-width: 200px;
+      }
+
+      .logo svg {
+        width: 100%;
+        height: auto;
+      }
+    </style>
+</head>
+<body>
+  <div id="container">
+    <div id="form-user">
+      <div class="logo-container">
+        <div class="logo">
+          <svg width="86" height="87" viewBox="0 0 86 87" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g filter="url(#filter0_d_118_16)">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M84.6666 72.025V42C84.6666 18.9875 66.0124 0.333313 42.9999 0.333313C19.9874 0.333313 1.33325 18.9875 1.33325 42V72.025C1.3335 73.2517 1.64734 74.458 2.24499 75.5293C2.84263 76.6006 3.70422 77.5013 4.74793 78.1459C5.79165 78.7905 6.98282 79.1575 8.20832 79.2122C9.43381 79.2669 10.6529 79.0074 11.7499 78.4583C13.6489 77.5088 15.7651 77.0781 17.8842 77.2098C20.0032 77.3416 22.0498 78.031 23.8166 79.2083C25.7958 80.5276 28.1213 81.2316 30.4999 81.2316C32.8786 81.2316 35.204 80.5276 37.1833 79.2083L38.6541 78.2333C39.9412 77.3757 41.4533 76.9181 42.9999 76.9181C44.5466 76.9181 46.0587 77.3757 47.3458 78.2333L48.8166 79.2125C50.7958 80.5318 53.1213 81.2357 55.4999 81.2357C57.8786 81.2357 60.204 80.5318 62.1833 79.2125C63.9505 78.0344 65.9979 77.3445 68.1177 77.2128C70.2376 77.0811 72.3546 77.5122 74.2541 78.4625C75.3512 79.0108 76.5703 79.2695 77.7955 79.2141C79.0208 79.1588 80.2116 78.7912 81.2548 78.1462C82.298 77.5012 83.1591 76.6003 83.7562 75.529C84.3533 74.4577 84.6667 73.2515 84.6666 72.025ZM59.6666 35.75C59.6666 39.2 57.7999 42 55.4999 42C53.1999 42 51.3333 39.2 51.3333 35.75C51.3333 32.3 53.1999 29.5 55.4999 29.5C57.7999 29.5 59.6666 32.3 59.6666 35.75ZM30.4999 42C32.7999 42 34.6666 39.2 34.6666 35.75C34.6666 32.3 32.7999 29.5 30.4999 29.5C28.1999 29.5 26.3333 32.3 26.3333 35.75C26.3333 39.2 28.1999 42 30.4999 42Z" fill="#26264E"/>
+            </g>
+            <defs>
+            <filter id="filter0_d_118_16" x="0.333252" y="0.333313" width="85.3333" height="85.9024" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+            <feOffset dy="4"/>
+            <feGaussianBlur stdDeviation="0.5"/>
+            <feComposite in2="hardAlpha" operator="out"/>
+            <feColorMatrix type="matrix" values="0 0 0 0 0.14902 0 0 0 0 0.14902 0 0 0 0 0.305882 0 0 0 0.6 0"/>
+            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_118_16"/>
+            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_118_16" result="shape"/>
+            </filter>
+            </defs>
+          </svg>
+        </div>
+      </div>
+      <div class="form-container">
+        <form id="form" action="chat">
+          <input id="input" autocomplete="off" placeholder="Enter your username" name="username" required/>
+          <button type="submit"> let talk!
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

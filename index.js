@@ -2,21 +2,33 @@ const express = require('express');
 const { createServer } = require('node:http');
 const { join } = require('node:path');
 const { Server } = require('socket.io');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 const server = createServer(app);
 const io = new Server(server);
 
-// app.set("view engine", 'ejs');
+app.set("view engine", 'ejs');
+
+app.use(cors())
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+
 app.get('/', (req, res) => {
-  res.sendFile(join(__dirname, '/public/index.html'));
+  res.render("index.ejs");
+});
+
+app.get('/chat', (req, res) => {
+    res.render('chat.ejs', {username: req.query.username});
 });
 
 io.on('connection', (socket) => {
     console.log('a user connected');
     
-    socket.on('chat message', (msg) => {
-        socket.broadcast.emit('chat message', msg);
+    socket.on('chat message', (msg, senderName) => {
+        console.log(`${senderName}: ${msg}`)
+        socket.broadcast.emit('chat message', msg, senderName);
     });
 
     socket.on('disconnect', () => {
