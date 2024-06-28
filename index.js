@@ -26,9 +26,9 @@ app.get('/chat', (req, res) => {
 io.on('connection', (socket) => {
     console.log('a user connected');
     
-    socket.on('chat message', (msg, senderName) => {
-        console.log(`${senderName}: ${msg}`)
-        socket.broadcast.emit('chat message', msg, senderName);
+    socket.on('chat message', (message) => {
+        console.log(`${message.senderName}: ${message.message}`)
+        socket.broadcast.emit('chat message', message);
     });
 
     socket.on('disconnect', () => {

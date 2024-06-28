@@ -9,22 +9,23 @@
       #main-container {
         display: flex;
         flex-direction: column;
+        max-height: 90vh;
       }
 
-      #form { background-color: #28283c; padding: 0.25rem; height: 7vh; box-shadow: 0 0 5px #3c3c50; position: fixed; bottom: 0; left: 0; right: 0; display: flex; box-sizing: border-box; backdrop-filter: blur(10px); }
+      #form { background-color: #28283c; padding: 0.25rem; box-shadow: 0 0 5px #3c3c50; height: 50%; max-height: 3.5em; position: fixed; bottom: 0; left: 0; right: 0; display: flex; box-sizing: border-box; backdrop-filter: blur(10px); }
       #input { background-color: #3c3c50; color: white; border: none; padding: 0 1rem; box-shadow: 0 0 3px rgba(255, 255, 255, 0.3) inset; border-radius: 2rem; flex-grow: 1; margin: 0.25rem; }
       #input:focus { outline: none; box-shadow: 0 0 3px rgba(255, 255, 255, 0.3);}
       #form > button {  background: #5a5a9b; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 25px; outline: none; color: #fff; }
 
       .message-row {padding: 0.3em 1em; display: flex; flex-direction: row; justify-content: start;}
       .message-row:has(.own) {justify-content: end;}
-      .message-item {width: max-content; color: #efefef; padding: 0.7rem; margin: 0; border-radius: 15px 15px 15px 15px;}
+      .message-item {width: max-content; max-width: 40%; color: #efefef; padding: 0.7rem; margin: 0; border-radius: 15px 15px 15px 15px;}
       .own {background-color: #5a5a9b; border-bottom-right-radius: 0;}
       .other {background-color: #3c3c3c; border-top-left-radius: 0;}
       .sender-name {margin: 0 0 0 0; color: #7878af;}
       .message {margin: 0;}
-      #messages-list { list-style-type: none; margin: 0; padding: 1em 0; display: flex; flex-direction: column;  overflow: scroll}
-      #message-container {height: 93vh; display: flex; flex-direction: column; justify-content: space-between}
+      #messages-list { list-style-type: none; margin: 0; padding: 1em 0; display: flex; flex-direction: column;}
+      #message-container {display: flex; flex-direction: column; justify-content: space-between; overflow: auto}
       #header-message-container {background-color: #3c3c50; color: #52a77a; box-shadow: 0 0 0.7px black; padding: 0.1em 1rem; margin: 0;}
       #header-message-container > h1 { margin-bottom: 0; color: #a2a2c4;}
       #header-message-container > h2 { margin: 0 0 10px 0; padding: 0; color: #7878af;}
@@ -34,10 +35,10 @@
   </head>
   <body>
     <div id="main-container">
+      <div id="header-message-container">
+        <h1>Ghost-talk</h1>
+      </div>
       <div id="message-container">
-        <div id="header-message-container">
-          <h1>Ghost-talk</h1>
-        </div>
         <div id="messages-list"></div>
       </div>
       <form id="form" action="">
@@ -52,7 +53,7 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-      let username = "<%= locals.username%>";
+      let username = "<%= locals.username%>" || `user${crypto.randomUUID("").substring(0, 5)}`;
       const header = document.getElementById('header-message-container')
       const title = document.createElement('h2');
       title.textContent = username;
@@ -71,7 +72,7 @@
         const message = document.createElement("p");
 
         if (input.value) {
-          socket.emit('chat message', input.value, username);
+          socket.emit('chat message', {message:input.value, senderName:username});
           message.textContent = input.value;
           input.value = '';
 
@@ -88,17 +89,17 @@
         }
       });
 
-      socket.on('chat message', (msg, senderName) => {
+      socket.on('chat message', (msg) => {
         const messageRow = document.createElement('div');
         const messageItem = document.createElement('div');
         const senderNname = document.createElement('p');
         const message = document.createElement("p");
 
         message.classList.add("message")
-        message.textContent = msg;
+        message.textContent = msg.message;
 
         senderNname.classList.add('sender-name');
-        senderNname.textContent = senderName;
+        senderNname.textContent = msg.senderName;
 
         messageItem.classList.add("other", "message-item");
         messageItem.appendChild(senderNname);
