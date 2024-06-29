@@ -14,7 +14,7 @@
       }
 
       #form { background-color: #28283c; padding: 0.25rem; box-shadow: 0 0 5px #3c3c50; height: 50%; max-height: 3.5em; position: fixed; bottom: 0; left: 0; right: 0; display: flex; box-sizing: border-box; backdrop-filter: blur(10px); }
-      #input { background-color: #28283c; color: white; border: none; padding: 0 1rem; border-radius: 2rem; flex-grow: 1; margin: 0.25rem; }
+      #input { background-color: #28283c; color: white; font-size: 1em; border: none; padding: 0 1rem; border-radius: 2rem; flex-grow: 1; margin: 0.25rem; }
       #input:focus {outline: none; box-shadow: 0 0 2px rgba(255, 255, 255, 0.3) inset;}
       /* #input:focus {background-color: #3c3c50; outline: none; box-shadow: 0 0 1px rgba(0, 0, 0, 0.342);} */
       #form > button {  background: #5a5a9b; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 1em; outline: none; color: #fff; }
@@ -29,9 +29,9 @@
       .message-time {margin: 0; font-size: 0.7em; color: #bfbfe6; text-align: right;}
       #messages-list { list-style-type: none; margin: 0; padding: 1em 0; display: flex; flex-direction: column;}
       #message-container {display: flex; flex-direction: column; justify-content: space-between; overflow: auto}
-      #header-message-container {background-color: #3c3c50; color: #52a77a; box-shadow: 0 0 0.7px black; padding: 0.1em 1rem; margin: 0;}
-      #header-message-container > h1 { margin-bottom: 0; color: #a2a2c4;}
-      #header-message-container > h2 { margin: 0 0 10px 0; padding: 0; color: #7878af;}
+      #header-message-container {background-color: #3c3c50; color: #52a77a; box-shadow: 0 0 0.7px black; padding: 0.1em 1rem; margin: 0; display: flex; flex-direction: row; justify-content: space-between; align-items: end;}
+      #header-message-container #title > h1 { margin-bottom: 0; color: #a2a2c4;}
+      #header-message-container #title > h2, #header-message-container #general-info > h3 { margin: 0 0 10px 0; padding: 0; color: #7878af;}
       
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,7 +39,12 @@
   <body>
     <div id="main-container">
       <div id="header-message-container">
-        <h1>Ghost-talk</h1>
+        <div id="title">
+          <h1>Ghost-talk</h1>
+        </div>
+        <div id="general-info">
+          <h3>connected <span id="connected-count" style="color: #cfdcdf;">3</span></h3>
+        </div>
       </div>
       <div id="message-container">
         <div id="messages-list"></div>
@@ -57,16 +62,25 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
       let username = "<%= locals.username%>" || `user${crypto.randomUUID("").substring(0, 5)}`;
-      const header = document.getElementById('header-message-container')
-      const title = document.createElement('h2');
-      title.textContent = username;
-      header.appendChild(title);
+      const header = document.querySelector('#header-message-container #title')
+      const headerTilte = document.createElement('h2');
+      let connectedCount = 0;
+      const connectedCountElt = document.querySelector("#connected-count");
+
+      connectedCountElt.textContent = connectedCount;
+
+      headerTilte.textContent = username;
+      header.appendChild(headerTilte);
 
       const socket = io();
       
       const form = document.getElementById('form');
       const input = document.getElementById('input');
       const messagesList = document.getElementById('messages-list');
+
+      socket.on('connection event', (count) => {
+        connectedCountElt.textContent = count;
+    })
 
       socket.on('register event', (callback) => {
         callback({username: username});

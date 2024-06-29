@@ -34,6 +34,7 @@ io.on('connection', async (socket) => {
       socketId: socket.id
     });
     console.log(userInfo.username, 'is conected');
+    io.emit("connection event", connectedUsers.length);
     
     socket.on('chat message', (message) => {
         io.timeout(5000).emit('date event', (error, response) => {
@@ -42,12 +43,12 @@ io.on('connection', async (socket) => {
             message.messageTime = moment().format("HH:mm");
             io.emit('chat message', message);
           } else {
-            console.log("pas d'erreur");
             for(const elt of response){
               message.messageTime = moment(elt.date).format("HH:mm");
               const user = connectedUsers.filter((user) => user.username === elt.username);
               io.to(user[0].socketId).emit('chat message', message);
             }
+            console.log(message, `at ${moment().format("DD/MM/YYYY HH:mm")}`);
           }
         })
     });
@@ -67,6 +68,7 @@ io.on('connection', async (socket) => {
     socket.on('disconnect', () => {
         connectedUsers = connectedUsers.filter(user => user.socketId !== socket.id);
         console.log('user disconnected');
+        io.emit("connection event", connectedUsers.length);
     });
   } catch (error) {
     console.log(error.message)
