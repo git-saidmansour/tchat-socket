@@ -68,12 +68,20 @@
       const input = document.getElementById('input');
       const messagesList = document.getElementById('messages-list');
 
+      socket.on('register event', (callback) => {
+        callback({username: username});
+      });
+
       form.addEventListener('submit', (e) => {
         e.preventDefault();
         if (input.value) {
           socket.emit('chat message', {message:input.value, senderName:username});
           input.value = '';
         }
+      });
+
+      socket.on('date event', (response) => {
+        response({username, date: Date.now()});
       });
 
       socket.on('chat message', (msg) => {
